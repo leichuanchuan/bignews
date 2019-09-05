@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>大事件-后台登录页</title>
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
+    <!-- 导入bootstrap css样式表 -->
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <!-- 导入jq -->
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+    <!-- 导入bootstrop  的   js文件 -->
+</head>
+
+<body>
+    <div class="main_wrap">
+        <div class="header">
+            <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
+            <div class="copyright">CopyRight © 2019 深圳百秀信息技术股份有限公司<br>All Rights Reserved</div>
+        </div>
+
+        <div class="login_form_con">
+            <div class="login_title"></div>
+            <form class="login_form">
+                <i class="iconfont icon-user"></i>
+                <i class="iconfont icon-key"></i>
+                <input type="text" class="input_txt" placeholder="邮箱/手机号">
+                <input type="password" class="input_pass" placeholder="密码">
+                <input type="button" class="input_sub" value="登 录">
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">系统提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+                    <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button> -->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</body>
+
+
+<script>
+    $(function () {
+        function showModel(msg, func) {
+            $('.modal-body').text(msg);
+            $('#myModal').modal({ keyboard: true });
+            if (func && func instanceof Function) {
+                setTimeout(func, 2000);
+            }
+        }
+        $('.input_sub').click(function () {
+            var usrName = $('.input_txt').val().replace(/ /g, '');
+            var usrPwd = $('.input_pass').val().replace(/ /g, '');
+            $('.input_txt').val(usrName);
+            $('.input_pass').val(usrPwd);
+            if (usrName.length < 5) {
+                $('.input_txt').focus();
+                // alert('用户名长度必须大于5');
+                showModel('用户名长度必须大于5');
+                // $('.modal-body').text('用户名长度必须大于5');
+                // $('#myModal').modal({keyboard:true})
+            } else if (usrPwd.length < 5) {
+                $('.input_pass').focus();
+                showModel('密码长度必须大于5');
+            } else {
+                // $.ajax({
+                //     url: 'http://127.0.0.1:8080/admin/user/login',
+                //     method: 'post',
+                //     data: 'username=' + usrName + '&password=' + usrPwd,
+                //     success:function(backData)       {
+                //         alert(backData.msg);
+                //         if (backData.code == 200)  {
+                //             window.location ='./index.html';
+                //         }
+                //     }
+                $.ajax({
+                    url: 'http://127.0.0.1:8080/admin/user/login',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        username: usrName,
+                        password: usrPwd
+                    },
+                    success: function (backData) {
+                        showModel(backData.msg, function () {
+                            console.log(backData);
+                            if (backData.code == 200) {
+                                window.location = './index.html';
+                            }
+                            else {
+                                $('.input_txt').focus();
+                            }
+                        });
+
+                    }
+                });
+            }
+        })
+    })
+
+</script>
+
+
+</html>
